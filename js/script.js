@@ -94,10 +94,10 @@ function showQuetions(index){
 
     //creating a new span and div tag for question and option and passing the value using array index
     let que_tag = '<span>'+ questions[index].numb + ". " + questions[index].question +'</span>';
-    let option_tag = '<div class="option"><span>'+ questions[index].options[0] +'</span></div>'
+    let option_tag =  '<div class="option"><span>'+ questions[index].options[0] +'</span></div>'
                     + '<div class="option"><span>'+ questions[index].options[1] +'</span></div>'
                     + '<div class="option"><span>'+ questions[index].options[2] +'</span></div>'
-                    + '<div class="option"><span>'+ questions[index].options[3] +'</span></div>';
+                 ;
     que_text.innerHTML = que_tag; //adding new span tag inside que_tag
     option_list.innerHTML = option_tag; //adding new div tag inside option_tag
     
@@ -139,6 +139,7 @@ function optionSelected(answer){
             }
         }
     }
+    saveScore(userScore);
     for(i=0; i < allOptions; i++){
         option_list.children[i].classList.add("disabled"); //once user select an option then disabled all options
     }
@@ -209,4 +210,53 @@ function queCounter(index){
     //creating a new span tag and passing the question number and total question
     let totalQueCounTag = '<span><p>'+ index +'</p> of <p>'+ questions.length +'</p> Questions</span>';
     bottom_ques_counter.innerHTML = totalQueCounTag;  //adding new span tag inside bottom_ques_counter
+}
+
+//this code for dark mood toggle button
+const darkModeToggle = document.getElementById('darkModeToggle');
+const root = document.documentElement;
+if (localStorage.getItem('theme') === 'dark') {
+    root.classList.add('dark-mode');
+    darkModeToggle.textContent = '☀️'; 
+}
+// Toggle dark mode
+darkModeToggle.addEventListener('click', () => {
+    root.classList.toggle('dark-mode');
+    const theme = root.classList.contains('dark-mode') ? 'dark' : 'light';
+    darkModeToggle.textContent = theme === 'dark' ? '☀️' : '🌙'; // Update icon dynamically
+    localStorage.setItem('theme', theme); // Save preference
+});
+
+//This code for  Create a smooth scroll effect for internal links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener("click", function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute("aria"));
+        target.scrollIntoView({
+            behavior: "smooth", 
+            block: "start"      
+        });
+    });
+});
+
+// for saving the score and timestamp in localstorag and clear the localstorager after 24 hours.
+function saveScore(userScore){
+    localStorage.setItem('ScoreSaved', JSON.stringify(userScore))
+    //save the score and the timestamp on localstorage to 24 hours ans than clear teh localstorage
+    var now = new Date().getTime();
+    localStorage.setItem('setupTime', now);
+    var setupTime = localStorage.getItem('setupTime');
+    console.log(setupTime);
+    var elapsedTime = now - setupTime;
+    console.log(elapsedTime);
+    // 86400000 is the number of milliseconds in 24 hours
+    // 1 second = 1000 milliseconds
+    // 1 minute = 60 * 1000 = 60,000 milliseconds
+    // 1 hour = 60 * 60 * 1000 = 3,600,000 milliseconds
+    // 1 day = 24 * 60 * 60 * 1000 = 86,400,000 milliseconds
+    // 24 hours = 86,400,000 milliseconds
+    if (elapsedTime > 86400000){
+        localStorage.clear();
+    }
+   
 }
